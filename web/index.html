@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style type="text/css">
+            html, body{
+                width: 100%;
+                height: 100%;
+                border: 0 none;
+                margin: 0;
+            }
+            #map{
+                height: 100%;
+            }
+            #basemapGalleryDiv {
+                position: absolute;
+                visibility: hidden;
+                opacity: 0;
+                top: 0px;
+                /*right: 20px;*/
+                width: 100%;
+                z-index: 50;
+                background-color: rgba(0,0,0,0.5);
+            }
+            .esriSimpleSlider div{
+                background: red;
+            }
+            #btn{
+                position: absolute;
+                z-index: 100;
+                bottom: 10px;
+                left: 10px;
+            }
+        </style>
+        <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+        <script src="http://js.arcgis.com/3.13/"></script>
+        <script>
+            function mostrar (){
+                if(document.getElementById("basemapGalleryDiv").className.indexOf("visible") > 0){
+                    oculta();
+                }
+                else{
+                    muestra();
+                }
+            }
+            
+            function muestra(){
+                document.getElementById("basemapGalleryDiv").style.opacity = 1;
+                document.getElementById("basemapGalleryDiv").style.visibility = 'visible';
+                document.getElementById("basemapGalleryDiv").classList.add('visible');
+            }
+            
+            function oculta(){
+                document.getElementById("basemapGalleryDiv").style.opacity = 0;
+                document.getElementById("basemapGalleryDiv").style.visibility = 'hidden';
+                document.getElementById("basemapGalleryDiv").classList.remove('visible');
+            }
+            
+            require([
+                "esri/map", 
+                "esri/dijit/BasemapToggle",
+                "esri/dijit/BasemapGallery",
+                "dojo/domReady!"], function(
+                    Map, 
+                    BasemapToggle,
+                    BasemapGallery
+                ) { 
+                var map = new Map("map", {
+                    center: [-118, 34.5],
+                    zoom: 8,
+                    basemap: "topo"
+                });
+                
+//                var toggle = new BasemapToggle({
+//                    map: map,
+//                    basemap: "hybrid"
+////                    basemaps: {
+////                        "streets":{
+////                            "label":"Streets",
+////                            "url":"http://js.arcgis.com/3.11/esri/dijit/images/basemaps/streets.jpg"
+////                          },
+////                        "satellite":{
+////                            "label":"Satellite",
+////                            "url":"http://js.arcgis.com/3.11/esri/dijit/images/basemaps/satellite.jpg"
+////                        }
+////                        }
+//                }, "BasemapToggle");
+//                toggle.startup();
+
+                var basemapGallery = new BasemapGallery({
+                    showArcGISBasemaps: true,
+//                    basemapsGroup: { owner: "esri", title: "Community Basemaps" },
+                    map: map
+              }, "basemapGalleryDiv");
+              basemapGallery.startup();
+
+            });
+        </script>
+    </head>
+    <body>
+        <div id="map">
+            <div id="BasemapToggle"></div>
+            <div id="basemapGalleryDiv"></div>
+        </div>
+        <button id="btn" onclick="mostrar()">Mostrar galería</button>
+    </body>
+</html>
