@@ -33,6 +33,11 @@ and open the template in the editor.
             .esriSimpleSlider div{
                 background: red;
             }
+            
+            .esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail{ 
+                border-color: #66FFFF !important; 
+            }
+            
             #btn{
                 position: absolute;
                 z-index: 100;
@@ -68,40 +73,55 @@ and open the template in the editor.
                 "esri/map", 
                 "esri/dijit/BasemapToggle",
                 "esri/dijit/BasemapGallery",
+                "esri/layers/FeatureLayer",
+                "esri/symbols/SimpleFillSymbol",
+                "esri/symbols/SimpleLineSymbol",
+                "esri/InfoTemplate",
+                "esri/Color",
                 "dojo/domReady!"], function(
                     Map, 
                     BasemapToggle,
-                    BasemapGallery
+                    BasemapGallery,
+                    FeatureLayer,
+                    SimpleFillSymbol,
+                    SimpleLineSymbol,
+                    InfoTemplate,
+                    Color
                 ) { 
                 var map = new Map("map", {
-                    center: [-118, 34.5],
-                    zoom: 8,
-                    basemap: "topo"
+                    center: [-101.966211, 22.005833],
+                    zoom: 5,
+                    basemap: "hybrid"
                 });
-                
-//                var toggle = new BasemapToggle({
-//                    map: map,
-//                    basemap: "hybrid"
-////                    basemaps: {
-////                        "streets":{
-////                            "label":"Streets",
-////                            "url":"http://js.arcgis.com/3.11/esri/dijit/images/basemaps/streets.jpg"
-////                          },
-////                        "satellite":{
-////                            "label":"Satellite",
-////                            "url":"http://js.arcgis.com/3.11/esri/dijit/images/basemaps/satellite.jpg"
-////                        }
-////                        }
-//                }, "BasemapToggle");
-//                toggle.startup();
 
                 var basemapGallery = new BasemapGallery({
                     showArcGISBasemaps: true,
-//                    basemapsGroup: { owner: "esri", title: "Community Basemaps" },
                     map: map
-              }, "basemapGalleryDiv");
-              basemapGallery.startup();
-              alert("Hola Aura, no tengas miedo. Yo no tengo miedo... como piensas eso");
+                }, "basemapGalleryDiv");
+                basemapGallery.startup();
+                
+                //Agrego el diálogo de información
+                var infoTemplate = new InfoTemplate();
+                infoTemplate.setTitle("Información de general.");
+                infoTemplate.setContent("${*}");
+                
+                
+                //Declaro la ruta
+                var url = "http://172.16.4.102:6080/arcgis/rest/services/MyMapService/MapServer/0";
+                var capa = new FeatureLayer(url, {
+                    outFields: ["*"],
+                    id: "capaVuelos",
+                    infoTemplate: infoTemplate,
+                    opacity: 0.5
+                });
+                // InfoWindow FillSymbol highlight
+                var sfs = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                  new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                    new Color([0,0,0,0.5]), 10), new Color([0,0,0,0.5])
+                );
+                capa.setSelectionSymbol(sfs);
+                
+                map.addLayer(capa);
             });
         </script>
     </head>
